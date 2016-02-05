@@ -4,16 +4,16 @@ import time
 from sets import Set
 
 videoNames = {}
-with open("Video Names 3.csv", "rU") as f:
+with open("Video Names F14 2.csv", "rU") as f:
     reader = csv.reader(f)
     for row in reader:
         videoNames[row[0]] = row[1] #cannot remember how this line works exactly
         
 usernames = Set()
-with open("Names for SPOC.csv", "rb") as f:
+with open("spoc usernames of people in class F14.csv", "rb") as f:
 	reader = csv.reader(f)
 	for row in reader:
-		usernames.add(row[3])
+		usernames.add(row[0])
 
 data={} #first dict with username (key) : second dict (value)
 def parseEventText(eventLine):
@@ -28,7 +28,7 @@ def parseEventText(eventLine):
 	return result
 
 
-for line in liblytics.read_log_file("tracking_700x_UMass__Fall_2013.log.gz"): #Reads line in log file
+for line in liblytics.read_log_file("umass_boston-edge-events-ALL.log.zip"): #Reads line in log file
 	if (line["event_type"] == "play_video"):  # Grabs only play_videos
 		username=line["username"]
 		t = time.strptime(line['time'].split('+')[0], "%Y-%m-%dT%H:%M:%S.%f") 
@@ -72,7 +72,7 @@ for username in sorted(usernames):
 						videoDict["Filtered_play_list"]=filtered_playtime_list
 						videoDict["Filtered Plays"]= len(videoDict["Filtered_play_list"])
 # Prints to CSV
-f = open("Window (Number) f14.csv", "w") #This is where you could name the CSV
+f = open("Window 0 f14.csv", "w") #This is where you could name the CSV
 f.write("username,")
 for cleanName in sorted(videoNames):
 	f.write(cleanName)
