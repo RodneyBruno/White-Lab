@@ -4,17 +4,17 @@ import time
 from sets import Set
 
 videoNames = {}
-with open("Video Names 3.csv", "rU") as f:
+with open("Video Names F14 2.csv", "rU") as f:
     reader = csv.reader(f)
     for row in reader:
         videoNames[row[0]] = row[1] #cannot remember how this line works exactly
         
 usernames = Set()
-with open("Names for SPOC.csv", "rb") as f:
+with open("SPOC Grades Edited.csv", "rb") as f:
 	reader = csv.reader(f)
 	for row in reader:
-		usernames.add(row[3])
-
+		usernames.add(row[1])
+		
 data={} #first dict with username (key) : second dict (value)
 def parseEventText(eventLine):
 	line = eventLine.replace("{","")
@@ -28,7 +28,7 @@ def parseEventText(eventLine):
 	return result
 
 
-for line in liblytics.read_log_file("tracking_700x_UMass__Fall_2013.log.gz"): #Reads line in log file
+for line in liblytics.read_log_file("umass_boston-edge-events-2014-09-17.log.gz"): #Reads line in log file
 	if (line["event_type"] == "play_video"):  # Grabs only play_videos
 		username=line["username"]
 		t = time.strptime(line['time'].split('+')[0], "%Y-%m-%dT%H:%M:%S.%f") 
@@ -49,8 +49,7 @@ for line in liblytics.read_log_file("tracking_700x_UMass__Fall_2013.log.gz"): #R
 			videoDict["Times"].append(times)
 			videoDict["Playcount"] = len(videoDict["Times"])
 			usersDict[videoName] = videoDict
-			data[username] = usersDict
-			
+			data[username] = usersDict			
 #calculate list of differences
 monsterList = []
 for username in sorted(usernames):
@@ -74,13 +73,13 @@ for username in sorted(usernames):
 					print videoName
 					print videoDict["Times"]
 			
-#for username in data:
-#	for videoName in data[username]:
-#		print data[username][videoName]["Playcount"]
+for username in data:
+	for videoName in data[username]:
+		print data[username][videoName]["Playcount"]
 
-#f = open("Monster List 2.csv", "w")
-#for x in monsterList:
-#	f.write(str(x))
-#	f.write("\n")
+f = open("Diff list for 9.17.14.csv", "w")
+for x in monsterList:
+	f.write(str(x))
+	f.write("\n")
 	
 f.close()
