@@ -28,7 +28,7 @@ def parseEventText(eventLine):
 	return result
 
 
-for line in liblytics.read_log_file("umass_boston-edge-events-2014-09-17.log.gz"): #Reads line in log file
+for line in liblytics.read_log_file("umass_boston-edge-events-ALL.log.gz"): #Reads line in log file
 	if (line["event_type"] == "play_video"):  # Grabs only play_videos
 		username=line["username"]
 		t = time.strptime(line['time'].split('+')[0], "%Y-%m-%dT%H:%M:%S.%f") 
@@ -68,16 +68,13 @@ for username in sorted(usernames):
 					#idea, if secdiff = 0 then print the username, the videoName, and the time list
 					monsterList.append(secdiff)
 					timecount=timecount-1
-				if secdiff == 0:
-					print username
-					print videoName
-					print videoDict["Times"]
+					
 			
 for username in data:
 	for videoName in data[username]:
 		print data[username][videoName]["Playcount"]
 
-f = open("Diff list for 9.17.14.csv", "w")
+f = open("Monster List of Diff F14.csv", "w")
 for x in monsterList:
 	f.write(str(x))
 	f.write("\n")
