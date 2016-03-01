@@ -29,50 +29,31 @@ def parseEventText(eventLine):
 
 
 for line in liblytics.read_log_file("tracking_700x_UMass__Fall_2013.log.gz"): #Reads line in log file
-	if (line["event_type"] == "play_video"):  # Grabs only play_videos
+	if (line["event_type"] == "seek_video"):  # Grabs only seek_videos
 		username=line["username"]
-		t = time.strptime(line['time'].split('+')[0], "%Y-%m-%dT%H:%M:%S.%f") 
-		times = time.mktime(t)
+		newtimes = parseEventText(line["event"])["new_time"] 
 		#first loop creates first dict
 		if username != "": 
 			videoName = parseEventText(line["event"])["id"]
+			
 			if username not in data:
 				data[username] = {}
 			usersDict = data[username]
 			#creates third dict with playCount and Times (keys) and their values
 			if videoName not in usersDict: #second loop creates third dict
 				videoDict = {}
-				videoDict["Times"] = []
-				videoDict["Playcount"] = 1
+				videoDict["New Times"] = []
+				videoDict["Seek Video Count"] = 1
 				usersDict[videoName] = videoDict
 			videoDict = usersDict[videoName]
-			videoDict["Times"].append(times)
-			videoDict["Playcount"] = len(videoDict["Times"])
+			videoDict["New Times"].append(newtimes)
+			videoDict["Seek Video Count"] = len(videoDict["New Times"])
 			usersDict[videoName] = videoDict
 			data[username] = usersDict
 			
-#calculate list of differences
-filtered_playtime_list = []
-for username in sorted(usernames):
-	if username in data:
-		usersDict = data[username]
-		for cleanName in sorted(videoNames):
-			if videoNames[cleanName] in data[username]:
-				videoDict = usersDict[videoNames[cleanName]]
-				filtered_playtime_list = []
-				playtime_list = videoDict["Times"]
-				LPT = 0  # start at 0 so you automatically include the first play_video event
-				for playtime in sorted(playtime_list):
-					T2 = playtime
-					diff = T2 - LPT
-					#set time window by changing the number below
-					if diff > 900:
-						filtered_playtime_list.append(T2)
-						LPT=T2
-						videoDict["Filtered_play_list"]=filtered_playtime_list
-						videoDict["Filtered Plays"]= len(videoDict["Filtered_play_list"])
+
 # Prints to CSV
-f = open("Window 15 min f13.csv", "w") #This is where you could name the CSV
+f = open("Total Seek Videos f13.csv", "w") #This is where you could name the CSV
 f.write("username,")
 for cleanName in sorted(videoNames):
 	f.write(cleanName)
@@ -86,7 +67,7 @@ for username in sorted(usernames):
 		f.write(",")
 		for cleanName in sorted(videoNames):
 			if videoNames[cleanName] in data[username]:
-				f.write(str(data[username][videoNames[cleanName]]["Filtered Plays"]))
+				f.write(str(data[username][videoNames[cleanName]]["Seek Video Count"]))
 				f.write(",")	
 			else:
 				f.write("0,")
