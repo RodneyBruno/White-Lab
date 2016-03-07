@@ -72,7 +72,7 @@ for username in sorted(usernames):
 						videoDict["Filtered_play_list"]=filtered_playtime_list
 						videoDict["Filtered Plays"]= len(videoDict["Filtered_play_list"])
 # Prints to CSV
-f = open("Win (number) min f14.csv", "w") #This is where you could name the CSV
+f = open("Win (Number) min f14.csv", "w") #This is where you could name the CSV
 f.write("username,")
 for cleanName in sorted(videoNames):
 	f.write(cleanName)
